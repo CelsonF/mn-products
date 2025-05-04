@@ -1,5 +1,6 @@
 package com.celsonf.controller;
 
+import com.celsonf.model.Product;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.json.JsonMapper;
@@ -31,6 +32,15 @@ class ProductsControllerTest {
        var response = client.toBlocking().retrieve("/", JsonNode.class);
        LOG.debug("Retrieved response: {}", logProducts(response));
        assertEquals(10,response.size());
+    }
+
+    @Test
+    void productsEndpointReturnsProductById() throws IOException {
+        var response = client.toBlocking().retrieve("/9", Product.class);
+
+        assertEquals(9,response.id());
+        assertEquals(Product.Type.COFFEE,response.type());
+        assertNotNull(response.name());
     }
 
     private String logProducts(JsonNode response) throws IOException {
