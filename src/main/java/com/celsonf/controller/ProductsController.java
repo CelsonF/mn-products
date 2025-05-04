@@ -2,10 +2,7 @@ package com.celsonf.controller;
 
 import com.celsonf.InMemoryStore;
 import com.celsonf.model.Product;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.PathVariable;
-import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.http.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +27,10 @@ public class ProductsController {
         return store.getProducts().get(id);
     }
 
-    @Get("/filters{?,max,offset}")
-    public List<Product> filteredProducts(@QueryValue Optional<Integer> max, @QueryValue Optional<Integer> offset) {
+    @Get("/filter{?max,offset}")
+    public List<Product> filteredProducts(
+            @QueryValue Optional<Integer> max,
+            @QueryValue Optional<Integer> offset) {
         return store.getProducts()
                 .values()
                 .stream()

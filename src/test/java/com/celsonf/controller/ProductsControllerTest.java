@@ -43,6 +43,23 @@ class ProductsControllerTest {
         assertNotNull(response.name());
     }
 
+    @Test
+    void canLimitTheAmountOfProductsToFetchTo5() throws IOException {
+       var response = client.toBlocking().retrieve("/filter?max=5", JsonNode.class);
+       LOG.debug("Retrieved 5 response: {}", logProducts(response));
+       assertEquals(5,response.size());
+    }
+
+    @Test
+    void canFilterUsingOffsetAndMaxLimit() throws IOException {
+        var response = client.toBlocking().retrieve("/filter?max=2&offset=6", JsonNode.class);
+        LOG.debug("Retrieved 2 products starting with offset 6: {}", logProducts(response));
+        assertEquals(2,response.size());
+        assertEquals(6,response.get(0).get("id").getIntValue());
+        assertEquals(7,response.get(1).get("id").getIntValue());
+    }
+
+
     private String logProducts(JsonNode response) throws IOException {
         return jsonMapper.writeValueAsString(response);
     }
