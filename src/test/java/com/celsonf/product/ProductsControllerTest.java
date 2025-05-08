@@ -1,4 +1,4 @@
-package com.celsonf.controller;
+package com.celsonf.product;
 
 import com.celsonf.model.Product;
 import io.micronaut.http.client.HttpClient;

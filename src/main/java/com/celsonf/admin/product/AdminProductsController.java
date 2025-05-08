@@ -1,4 +1,4 @@
-package com.celsonf.controller;
+package com.celsonf.admin.product;
 
 import com.celsonf.InMemoryStore;
 import com.celsonf.model.Product;
@@ -31,6 +31,16 @@ public class AdminProductsController {
         }
 
         return store.addProduct(product);
+    }
+
+    @Put("{id}")
+    public Product updateProduct(@PathVariable Integer id,
+                                 @Body UpdatedProductRequest request) {
+
+        var updatedProduct = new Product(id,request.name(), request.type());
+        store.addProduct(updatedProduct);
+
+        return updatedProduct;
     }
 
 

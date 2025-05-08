@@ -1,4 +1,4 @@
-package com.celsonf.controller;
+package com.celsonf.product;
 
 import com.celsonf.InMemoryStore;
 import com.celsonf.model.Product;
