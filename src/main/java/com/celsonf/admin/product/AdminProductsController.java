@@ -2,10 +2,16 @@ package com.celsonf.admin.product;
 
 import com.celsonf.InMemoryStore;
 import com.celsonf.model.Product;
+import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
+import io.micronaut.http.annotation.Error;
 import io.micronaut.http.exceptions.HttpStatusException;
+import org.slf4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller("/admin/products")
 public class AdminProductsController {
@@ -43,5 +49,14 @@ public class AdminProductsController {
         return updatedProduct;
     }
 
+
+    @Delete("{id}")
+    public Product deleteProduct(@PathVariable Integer id) {
+        Product deletedProduct = store.deleteProduct(id);
+        if (deletedProduct == null) {
+            throw new HttpStatusException(HttpStatus.NOT_FOUND, "Product not found");
+        }
+        return deletedProduct;
+    }
 
 }

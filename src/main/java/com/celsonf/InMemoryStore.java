@@ -40,4 +40,7 @@ public class InMemoryStore {
         return products;
     }
 
+    public Product deleteProduct(Integer id) {
+        return products.remove(id);
+    }
 }
