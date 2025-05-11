@@ -3,7 +3,9 @@ package com.celsonf.product;
 import com.celsonf.InMemoryStore;
 import com.celsonf.admin.product.UpdatedProductRequest;
 import com.celsonf.model.Product;
+import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpRequest;
+import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
@@ -105,5 +107,41 @@ class AdminProductsControllerTest {
         assertEquals(updateRequest.name(),productFromStore.name());
         assertEquals(Product.Type.TEA, productFromStore.type());
 
+    }
+
+    @Test
+    void productCanBeDeletedUsingAdminDeleteEndpoint() {
+       var productToDelete = new Product(1234, "delete me", Product.Type.OTHER);
+       store.addProduct(productToDelete);
+
+       assertTrue(store.getProducts().containsKey(productToDelete.id()));
+       assertTrue(store.getProducts().containsValue(productToDelete));
+
+       final HttpResponse<Product> response = client.toBlocking().exchange(
+               HttpRequest.DELETE("/"+productToDelete.id()),
+               Argument.of(Product.class)
+       );
+
+       assertEquals(HttpStatus.OK,response.getStatus());
+       assertTrue(response.getBody().isPresent());
+       assertEquals(productToDelete.id(), response.getBody().get().id());
+       assertEquals(productToDelete.name(), response.getBody().get().name());
+       assertEquals(Product.Type.OTHER, response.getBody().get().type());
+
+    }
+
+    @Test
+    void deletingNonExistingProductResultsInNotFoundResponse() {
+        var productId = 999;
+
+        store.getProducts().remove(productId);
+        assertNull(store.getProducts().get(productId));
+
+        var response = assertThrows(HttpClientResponseException.class,
+                () -> client.toBlocking().exchange(
+                        HttpRequest.DELETE("/"+productId)
+                ));
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatus());
     }
 }
